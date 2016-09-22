@@ -45,48 +45,53 @@ var myDisplay = document.getElementById('person');
 var counter = 0;
 var myArray;
 var contentToDisplay = "";
-	for (; counter < zepp.length; counter++) {
-    myArray = zepp[counter];
+
+for (; counter < zepp.length; counter++) {
+  myArray = zepp[counter];
   // Give each person element a unique identifier
-contentToDisplay += `<div class="person__container border" id="person--${counter}">`;
-      contentToDisplay+= `<div class= "title">${myArray.title}</div>`;
-        // contentToDisplay += myArray.title;
-      // contentToDisplay+= "</div>";
-      contentToDisplay+= `<div class= "name">${myArray.name}</div>`;
-      //   contentToDisplay += myArray.name;
-      // contentToDisplay+= "</div>";
-      contentToDisplay+= `<div class= "bio">${myArray.bio}</div>`;
-      //   contentToDisplay += myArray.bio;
-      // contentToDisplay+= "</div>";
-      contentToDisplay+= "Birth:" +`<div class= "lifespan">${myArray.lifespan.birth}</div>`;
-      //   contentToDisplay += myArray.lifespan.birth;
-      // contentToDisplay+= "</div>";
-      contentToDisplay+= "Death:" +`<div class= "lifespan">${myArray.lifespan.death}</div>`;
-      //   contentToDisplay += myArray.lifespan.death;
-      // contentToDisplay+= "</div>";
-contentToDisplay+= "</div>";
-myDisplay.innerHTML = contentToDisplay;
+  contentToDisplay += `<div class="person__container" id="person--${counter}">`;
+  contentToDisplay += `<div class= "title">${myArray.title}</div>`;
+
+  contentToDisplay += `<div class= "name">${myArray.name}</div>`;
+
+  contentToDisplay += `<div class= "bio">${myArray.bio}</div>`;
+
+  contentToDisplay += `<div class= "image"> src="${myArray.image}"</div>`;
+
+  contentToDisplay += "Birth:" + `<div class= "lifespan">${myArray.lifespan.birth}</div>`;
+
+  contentToDisplay += "Death:" + `<div class= "lifespan">${myArray.lifespan.death}</div>`;
+
+  contentToDisplay += "</div>";
+  myDisplay.innerHTML = contentToDisplay;
 };
 // Now containerEl will have elements in it
 var containerEl = document.getElementsByClassName("person__container");
-
+var inputBox = document.getElementById('input');
+var targetToEdit;
 // Event listeners are created
 for (var i = 0; i < containerEl.length; i++) {
   var targetEmt = containerEl[i];
-  targetEmt.addEventListener("click", function (event) {
+  targetEmt.addEventListener("click", function(event) {
     // Logic to execute when the element is clicked
-    event.currentTarget.classList.toggle("border");
-    input.focus();
-     // logic for mirror input
-     var inputBox = document.getElementById('input');
-     inputBox.onkeyup = function(){
-        // document.getElementById('person').innerHTML = inputBox.value;
-        targetEmt.innerHTML = inputBox.value;
-        inputBox.removeEventListener("keyup", inputBox);
-    }
-console.log(event.currentTarget);
+    this.classList.toggle("border");
+    inputBox.focus();
+    // logic for mirror inputBox
+    inputBox.value = this.childNodes[2].innerHTML;
+    targetToEdit = this;
+    inputBox.addEventListener("keyup", textInput)
+  });
+  targetEmt.addEventListener("mouseout", function(event) {
+    // Logic to execute when the element is clicked
+
+    inputBox.removeEventListener("keyup", textInput);
+
   });
 };
 
-// When there is a highlighted person element, and you begin typing in the input box, the person's biography should be immediately bound to what you are typing, letter by letter.
-// When you press the enter/return key when typing in the input field, then the content of the input field should immediately be blank.
+function textInput(e) {
+  targetToEdit.childNodes[2].innerHTML = inputBox.value;
+  if (e.keyCode === 13) {
+    inputBox.removeEventListener("keyup", textInput);
+  }
+}
